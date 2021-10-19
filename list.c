@@ -1,12 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "list.h"
 
-struct spend {
-  char food[100];
-  int price;
-  struct spend *next;
-};
 
 void print_spend(struct spend *f) {
   printf("food: %s\tcost: %d\n", f->food, f->price);
@@ -33,6 +29,7 @@ struct spend * insert_front(struct spend *front, char *c, int i) {
   p->next = front;
   return p;
 }
+
 struct spend * free_list(struct spend *s) {
   struct spend *d = s;
   while(s) {
@@ -43,13 +40,19 @@ struct spend * free_list(struct spend *s) {
   return d;
 }
 
-int main() {
-  struct spend *pizza = make_spend("pizza", 4);
-  struct spend *burger = insert_front(pizza, "burger", 6);
-  struct spend *fries = insert_front(burger, "fries", 2);
+struct spend * remove_node(struct spend *front, int data) {
+  if (front == NULL) return NULL;
+  if(front->price == data) front = front->next;
 
-  print_list(fries);
-  free_list(fries);
-
-  return 0;
+  struct spend * first = front;
+  while(first->next) {
+  if(first->next->price == data) {
+    first->next = first->next->next;
+    return front;
+  }
+  else {
+    first = first-> next;
+  }
+  }
+  return front;
 }
